@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agrisaarthi_backend
+    restart: always
+    environment:
+      - DATABASE_URL=sqlite:///./agrisaarthi.db
+      - SECRET_KEY=prod_secret_key_change_me_in_env
+      - DEMO_MODE=True
+      - CORS_ORIGINS=["http://localhost:5173","http://127.0.0.1:5173","http://localhost:3000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/agrisaarthi.db:/app/agrisaarthi.db
+      - ./backend/uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agrisaarthi_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
